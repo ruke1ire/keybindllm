@@ -11,7 +11,6 @@ This codebase provides a modular framework for creating AI-powered text processi
 ├── rephrase_service.py   # Rephrase-specific implementation
 ├── rephrase.py          # Main entry point (backwards compatible)
 ├── example_service.py   # Example showing how to create new services
-└── test_rephrase.py     # Simple test script
 ```
 
 ### Design Pattern
