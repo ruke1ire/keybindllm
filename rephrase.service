@@ -1,0 +1,15 @@
+[Unit]
+Description=Text Rephrase Service
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 %h/Projects/keybindllm/rephrase.py
+Restart=always
+RestartSec=5
+Environment=DISPLAY=:0
+Environment=OLLAMA_MODEL=llama3.2
+Environment=REPHRASE_KEYNUM=0
+
+[Install]
+WantedBy=default.target 
