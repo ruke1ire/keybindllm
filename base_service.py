@@ -216,11 +216,6 @@ class BaseAIService(ABC):
             self.pressed_keys.discard(key)
         except KeyError:
             pass
-        
-        # Exit on Escape (for debugging)
-        if key == Key.esc:
-            logger.info("Escape pressed, exiting...")
-            return False
     
     def run(self):
         """Main service loop"""
@@ -241,7 +236,6 @@ class BaseAIService(ABC):
             )
             listener.start()
             logger.info("Keyboard listener started. Press Ctrl+Alt+{} to trigger {}.".format(self.keynum, self.service_name))
-            logger.info("Press Escape to exit (manual mode only)")
             logger.info("Set DEBUG=1 environment variable for detailed key logging")
             
             # Keep the main thread alive

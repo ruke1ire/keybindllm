@@ -41,12 +41,29 @@ A systemd service that allows you to instantly rephrase and improve selected tex
 # Install service
 mkdir -p ~/.config/systemd/user
 cp rephrase.service ~/.config/systemd/user/
-sed -i "s|%h/Projects/keybindllm|$(pwd)|g" ~/.config/systemd/user/rephrase.service
+# Replace placeholder (__PROJECT_DIR__) with current directory path
+sed -i "s|__PROJECT_DIR__|$(pwd)|g" ~/.config/systemd/user/rephrase.service
 
 # Enable and start
 systemctl --user daemon-reload
 systemctl --user enable rephrase.service
 systemctl --user start rephrase.service
+```
+
+**Note:** The `rephrase.service` file contains a `__PROJECT_DIR__` placeholder that gets automatically replaced with your current directory path during installation. This allows the service to work regardless of where you clone the repository.
+
+## Uninstall
+
+```bash
+# Stop and disable service
+systemctl --user stop rephrase.service
+systemctl --user disable rephrase.service
+
+# Remove files
+rm -f ~/.config/systemd/user/rephrase.service
+
+# Reload systemd
+systemctl --user daemon-reload
 ```
 
 ## Environment Variables
@@ -64,11 +81,17 @@ REPHRASE_KEYNUM=1
 OLLAMA_URL=http://localhost:11434
 ```
 
-## Quick Debugging
+## Quick Systemd Debugging
 
 ```bash
 # Check service status
 systemctl --user status rephrase.service
+
+# Stop the service
+systemctl --user stop rephrase.service
+
+# Start the service
+systemctl --user start rephrase.service
 
 # View logs
 systemctl --user logs -f rephrase.service

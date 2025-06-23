@@ -4,7 +4,7 @@ After=graphical-session.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 %h/Projects/keybindllm/rephrase.py
+ExecStart=/usr/bin/python3 __PROJECT_DIR__/rephrase.py
 Restart=always
 RestartSec=5
 Environment=DISPLAY=:0
