@@ -31,7 +31,7 @@ A systemd service that allows you to instantly rephrase and improve selected tex
    DEBUG=1 python3 rephrase.py
    ```
 
-2. **Select text in any application and press Ctrl+Alt+0**
+2. **Select text in any application and press Ctrl+Alt+0** - the selected text will be automatically replaced with the corrected and improved version
 
 3. **Once working, install as service (see below) to automatically enable the keyboard shortcut.**
 
@@ -45,12 +45,10 @@ cp rephrase.service ~/.config/systemd/user/
 sed -i "s|__PROJECT_DIR__|$(pwd)|g" ~/.config/systemd/user/rephrase.service
 
 # Enable and start
-systemctl --user daemon-reload
+systemctl --user daemon-reload # Reload systemd configuration to recognize the new service
 systemctl --user enable rephrase.service
 systemctl --user start rephrase.service
 ```
-
-**Note:** The `rephrase.service` file contains a `__PROJECT_DIR__` placeholder that gets automatically replaced with your current directory path during installation. This allows the service to work regardless of where you clone the repository.
 
 ## Uninstall
 
