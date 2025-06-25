@@ -17,7 +17,7 @@ class RephraseService(BaseAIService):
     
     def __init__(self):
         super().__init__("Rephrase")
-        self.system_prompt = ("Please correct any grammatical errors and make improvements to the writing "
+        self.system_prompt = ("Please correct any grammatical errors and make structural improvements to the writing "
                             "while keeping the original tone and meaning. If you cannot rephrase it, "
                             "or change is not needed, return <null>. Return only the improved text "
                             "without any explanations or additional commentary.")
@@ -25,6 +25,13 @@ class RephraseService(BaseAIService):
     def get_system_prompt(self) -> str:
         """Return the system prompt for rephrasing"""
         return self.system_prompt
+    
+    def strip_think_tags(self, text: str) -> str:
+        """Strip out any content inside <think> tags from the response"""
+        import re
+        # Remove anything between <think> and </think> tags (case insensitive, multiline)
+        cleaned_text = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL | re.IGNORECASE)
+        return cleaned_text.strip()
     
     def get_selected_text(self):
         """Get currently selected text using xclip"""
@@ -131,6 +138,9 @@ class RephraseService(BaseAIService):
         if not rephrased_text:
             logger.error("❌ Failed to rephrase text")
             return
+        
+        # Strip out any content inside <think> tags
+        rephrased_text = self.strip_think_tags(rephrased_text)
         
         # Check if the LLM returned <null> (no changes needed)
         if rephrased_text.strip() == "<null>":

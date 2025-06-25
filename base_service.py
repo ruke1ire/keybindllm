@@ -76,26 +76,26 @@ class BaseAIService(ABC):
             
             if self.ollama_model not in available_models:
                 logger.warning(f"⚠️  Model '{self.ollama_model}' not found in available models")
-                logger.info(f"Attempting to pull model '{self.ollama_model}'...")
+                logger.info(f"Attempting to pull model '{self.ollama_model}' using CLI...")
                 
-                # Try to pull the model
-                pull_response = requests.post(f"{self.ollama_url}/api/pull", 
-                                            json={"name": self.ollama_model}, 
-                                            timeout=300)  # 5 minutes timeout for model download
-                
-                if pull_response.status_code == 200:
+                # Use ollama CLI to pull the model instead of API
+                try:
+                    # Don't capture output so progress is shown in real-time
+                    # No timeout - let it run as long as needed
+                    result = subprocess.run(['ollama', 'pull', self.ollama_model], 
+                                          check=True)
                     logger.info(f"✓ Model '{self.ollama_model}' pulled successfully")
-                else:
-                    logger.error(f"✗ Failed to pull model '{self.ollama_model}': {pull_response.text}")
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"✗ Failed to pull model '{self.ollama_model}': {e}")
+                    return False
+                except FileNotFoundError:
+                    logger.error("✗ 'ollama' command not found. Make sure Ollama CLI is installed and in PATH.")
                     return False
             else:
                 logger.info(f"✓ Model '{self.ollama_model}' is available")
         
         except requests.exceptions.RequestException as e:
-            logger.error(f"✗ Failed to check/pull model: {e}")
-            return False
-        except Exception as e:
-            logger.error(f"✗ Unexpected error checking model: {e}")
+            logger.error(f"✗ Failed to check model availability: {e}")
             return False
         
         # Step 3: Test the model with a simple request
